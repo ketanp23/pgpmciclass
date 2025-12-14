@@ -1,6 +1,7 @@
 Here is a complete **Hands-On Lab: Docker Fundamentals**.
 
 This lab is designed to be copy-pasted into your terminal. You will build a simple Python web application, containerize it, and connect it to a database (Redis) to understand networking.
+go to https://labs.play-with-docker.com/ for accessing the docker env
 
 -----
 
