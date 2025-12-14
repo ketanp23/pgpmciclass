@@ -1,4 +1,4 @@
-Here is the complete content formatted as a Markdown file. You can save this text as **`docker-lab.md`**.
+
 
 ````markdown
 # Hands-On Lab: Docker Fundamentals
