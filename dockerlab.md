@@ -3,7 +3,9 @@
 ````markdown
 # Hands-On Lab: Docker Fundamentals
 
-This lab is designed to be copy-pasted into your terminal. You will build a simple Python web application, containerize it, and connect it to a database (Redis) to understand networking.
+This lab is designed to be copy-pasted into your terminal. You will build a simple
+Python web application, containerize it, and connect
+it to a database (Redis) to understand networking.
 
 ## Lab Objective
 By the end of this lab, you will have mastered:
