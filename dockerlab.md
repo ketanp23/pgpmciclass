@@ -117,7 +117,7 @@ docker run -d -p 8080:5000 --name my-web-app hit-counter:v1
 docker ps
 ```
 
-  * *Action:* Open your browser to `http://localhost:8080`.
+  * *Action:* Open your browser to `http://<>:8080`.<> is your Docker enviorinment URL.
   * *Result:* You should see "Hello Docker\! (Redis is not connected yet)".
 
 **5. View Logs**
@@ -156,7 +156,7 @@ docker network connect lab-net my-web-app
 ```
 
 **4. Verify Connectivity**
-Refresh `http://localhost:8080`.
+Refresh `http://<>:8080`.<> is your Docker enviorinment URL. 
 
   * *Result:* "Hello Docker\! I have been seen 1 times."
   * Refresh again -\> "Seen 2 times".
