@@ -1,44 +1,44 @@
+Here is a complete **Hands-On Lab: Docker Fundamentals**.
 
-````
-# Hands-On Lab: Docker Fundamentals
+This lab is designed to be copy-pasted into your terminal. You will build a simple Python web application, containerize it, and connect it to a database (Redis) to understand networking.
 
-This lab is designed to be copy-pasted into your terminal. You will build a
-simple Python web application, containerize it, and connect it to a database
-(Redis) to understand networking.
+-----
 
-## Lab Objective
+### **Lab Objective**
+
 By the end of this lab, you will have mastered:
-1.  **Building** images (`docker build`)
-2.  **Running** containers (`docker run`, `docker ps`)
-3.  **Debugging** (`docker logs`, `docker exec`)
-4.  **Networking** containers together (`docker network`)
-5.  **Cleaning up** (`docker stop`, `docker rm`, `docker prune`)
 
----
+1.  **Building** images (`docker build`).
+2.  **Running** containers (`docker run`, `docker ps`).
+3.  **Debugging** (`docker logs`, `docker exec`).
+4.  **Networking** containers together (`docker network`).
+5.  **Cleaning up** (`docker stop`, `docker rm`, `docker prune`).
 
-## Part 1: Setup the Project
+-----
+
+### **Part 1: Setup the Project**
 
 First, create a folder and the necessary files for our "Hit Counter" app.
 
-### 1. Create a directory
+**1. Create a directory**
+
 ```bash
 mkdir docker-lab
 cd docker-lab
-````
+```
 
-### 2\. Create `app.py` (The Application)
-
-Create a file named `app.py` with the following code. This simple Flask app connects to Redis to count page views.
+**2. Create `app.py`** (The Application)
+This simple Flask app connects to Redis to count page views.
 
 ```python
+# Create this file named app.py
 from flask import Flask
 import redis
 import os
 
 app = Flask(__name__)
 
-# Connect to Redis using the hostname 'my-redis' 
-# (We will define this hostname in Docker later)
+# Connect to Redis using the hostname 'my-redis' (we will define this later in Docker)
 cache = redis.Redis(host='my-redis', port=6379)
 
 @app.route('/')
@@ -53,18 +53,14 @@ if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
 ```
 
-### 3\. Create `requirements.txt` (The Dependencies)
-
-Create a file named `requirements.txt`:
+**3. Create `requirements.txt`** (The Dependencies)
 
 ```text
 flask
 redis
 ```
 
-### 4\. Create the `Dockerfile` (The Blueprint)
-
-Create a file named `Dockerfile` (no extension):
+**4. Create the `Dockerfile`** (The Blueprint)
 
 ```dockerfile
 # Step 1: Use an official Python runtime as a parent image
@@ -88,26 +84,23 @@ CMD ["python", "app.py"]
 
 -----
 
-## Part 2: Build and Run (Single Container)
+### **Part 2: Build and Run (Single Container)**
 
-### 1\. Build the Image
-
+**1. Build the Image**
 We will tag (`-t`) the image as `hit-counter:v1`. The `.` tells Docker to look for the Dockerfile in the current directory.
 
 ```bash
 docker build -t hit-counter:v1 .
 ```
 
-### 2\. List your Images
-
+**2. List your Images**
 Verify the image was created.
 
 ```bash
 docker images
 ```
 
-### 3\. Run the Container
-
+**3. Run the Container**
 We map port **5000** inside the container to port **8080** on your machine.
 
 ```bash
@@ -117,17 +110,16 @@ docker run -d -p 8080:5000 --name my-web-app hit-counter:v1
   * `-d`: Detached mode (runs in background).
   * `--name`: Gives the container a friendly name.
 
-### 4\. Check container status
+**4. Check container status**
 
 ```bash
 docker ps
 ```
 
-**Action:** Open your browser to `http://<>:8080` <> is your docker enviorinment URL.
-**Result:** You should see "Hello Docker\! (Redis is not connected yet)".
+  * *Action:* Open your browser to `http://localhost:8080`.
+  * *Result:* You should see "Hello Docker\! (Redis is not connected yet)".
 
-### 5\. View Logs
-
+**5. View Logs**
 If something goes wrong (or to see the print statements), check the logs.
 
 ```bash
@@ -136,48 +128,45 @@ docker logs my-web-app
 
 -----
 
-## Part 3: Networking (Connecting to a Database)
+### **Part 3: Networking (Connecting to a Database)**
 
 Right now, the app fails to connect to Redis because Redis isn't running. We need to run Redis and put both containers on the same **Network**.
 
-### 1\. Create a Network
+**1. Create a Network**
 
 ```bash
 docker network create lab-net
 ```
 
-### 2\. Run Redis on the Network
-
+**2. Run Redis on the Network**
 We verify the Redis image is downloaded and run it attached to our new network.
 
 ```bash
 docker run -d --network lab-net --name my-redis redis:alpine
 ```
 
-  * **Note:** The container name `my-redis` becomes its DNS name inside this network.
+  * *Note:* The container name `my-redis` becomes its DNS name inside this network.
 
-### 3\. Connect the Web App to the Network
-
+**3. Connect the Web App to the Network**
 Our running web app (`my-web-app`) is not on this network. We could restart it, but let's just connect it live.
 
 ```bash
 docker network connect lab-net my-web-app
 ```
 
-### 4\. Verify Connectivity
-
+**4. Verify Connectivity**
 Refresh `http://localhost:8080`.
 
-  * **Result:** "Hello Docker\! I have been seen 1 times."
+  * *Result:* "Hello Docker\! I have been seen 1 times."
   * Refresh again -\> "Seen 2 times".
 
 -----
 
-## Part 4: Debugging & Executing Commands
+### **Part 4: Debugging & Executing Commands**
 
 Sometimes you need to go *inside* the container to check files or run manual commands.
 
-### 1\. Open a Shell inside the container
+**1. Open a Shell inside the container**
 
 ```bash
 docker exec -it my-web-app sh
@@ -187,8 +176,7 @@ docker exec -it my-web-app sh
   * Type `ls` to see your `app.py`.
   * Type `exit` to leave.
 
-### 2\. Inspect the Container
-
+**2. Inspect the Container**
 To see technical details (IP address, Environment variables, Mounts).
 
 ```bash
@@ -197,19 +185,18 @@ docker inspect my-web-app
 
 -----
 
-## Part 5: Development Workflow (Bind Mounts)
+### **Part 5: Development Workflow (Bind Mounts)**
 
 Currently, if you edit `app.py` on your laptop, the running container doesn't change. You'd have to rebuild. Let's fix that using a **Volume (Bind Mount)**.
 
-### 1\. Stop and Remove the old container
+**1. Stop and Remove the old container**
 
 ```bash
 docker stop my-web-app
 docker rm my-web-app
 ```
 
-### 2\. Run with a Bind Mount
-
+**2. Run with a Bind Mount**
 This maps your current folder (`$(pwd)`) to `/app` inside the container.
 *(Note: On Windows PowerShell, replace `$(pwd)` with `${PWD}`)*.
 
@@ -222,38 +209,42 @@ docker run -d \
   hit-counter:v1
 ```
 
-### 3\. Test Live Updates
+**3. Test Live Updates**
 
 1.  Open `app.py` in your text editor.
 2.  Change "Hello Docker\!" to "Hello **MASTER**\!".
 3.  Save the file.
-4.  Restart the container to pick up the change (Flask requires restart unless in debug mode):
+4.  The Flask app (if running in debug mode) or a manual restart inside would pick this up. Since Flask isn't in debug mode by default, let's just restart the container quickly to load the new file mapped from your disk:
     ```bash
     docker restart my-web-app
     ```
-5.  Refresh `http://<>:8080`. <> is your Docker enviorinment URL You should see the text change **without rebuilding the image**.
+5.  Refresh `http://localhost:8080`. You should see the text change **without rebuilding the image**.
 
 -----
 
-## Part 6: Cleanup
+### **Part 6: Cleanup**
 
 Never leave unused containers eating up your RAM\!
 
-### 1\. Stop and Remove containers
+**1. Stop all containers**
 
 ```bash
 docker stop my-web-app my-redis
+```
+
+**2. Remove containers**
+
+```bash
 docker rm my-web-app my-redis
 ```
 
-### 2\. Remove the Network
+**3. Remove the Network**
 
 ```bash
 docker network rm lab-net
 ```
 
-### 3\. Nuclear Option (Optional)
-
+**4. Nuclear Option (Optional)**
 This command deletes all stopped containers, unused networks, and dangling images.
 
 ```bash
@@ -262,7 +253,7 @@ docker system prune -f
 
 -----
 
-## Summary of Commands Used
+### **Summary of Commands Used**
 
 | Command | Description |
 | :--- | :--- |
@@ -276,7 +267,3 @@ docker system prune -f
 | `docker stop <name>` | Gracefully stop a container. |
 | `docker rm <name>` | Delete a stopped container. |
 | `docker system prune` | Clean up unused resources. |
-
-```
-```
-
