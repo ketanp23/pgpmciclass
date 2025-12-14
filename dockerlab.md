@@ -1,5 +1,5 @@
 
-````markdown
+````
 # Hands-On Lab: Docker Fundamentals
 
 This lab is designed to be copy-pasted into your terminal. You will build a
