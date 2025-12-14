@@ -1,5 +1,4 @@
 
-
 ````markdown
 # Hands-On Lab: Docker Fundamentals
 
