@@ -115,11 +115,7 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
 ```
 
-### Testing
-Run `python app.py` and test with:
-```
-curl -X POST http://localhost:5000/predict -H "Content-Type: application/json" -d '{"tenure": 12, "usage": 50, "age": 30, "monthly_charges": 70, "contract_type": "Month-to-month"}'
-```
+
 
 ## Step 3: Containerizing with Docker
 
