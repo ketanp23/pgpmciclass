@@ -171,7 +171,7 @@ CMD ["python", "app.py"]
 ```
 
 ### File
-**`docker-compose.yaml`**:
+**`docker-compose.yml`**:
 ```yaml
 version: '3.8'
 
